@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7fb">
+  <title>Northstar Fleet · WebMCP demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#/fleet" aria-label="Northstar home"><span class="brand-mark">N</span><span>northstar<span class="brand-light">.fleet</span></span></a>
+      <div class="workspace-label">WORKSPACE</div>
+      <button class="workspace-switch"><span class="workspace-dot"></span> Acme Mobility <span class="chevrons">⌄</span></button>
+      <div class="side-label">OPERATIONS</div>
+      <button class="nav-item active" data-go="#/fleet"><span class="nav-icon">◫</span> Fleet overview <span class="nav-count">12</span></button>
+      <button class="nav-item" data-go="#/fleet"><span class="nav-icon">⌖</span> Live tracking</button>
+      <button class="nav-item" data-go="#/fleet"><span class="nav-icon">▤</span> Maintenance <span class="nav-ping"></span></button>
+      <button class="nav-item" data-go="#/fleet"><span class="nav-icon">◷</span> Activity</button>
+      <div class="side-label side-label-spaced">PLATFORM</div>
+      <button class="nav-item" data-go="#/studio"><span class="nav-icon platform-icon">✳</span> WebMCP Studio <span class="new-badge">NEW</span></button>
+      <button class="nav-item" data-go="#/studio"><span class="nav-icon">⌘</span> Integrations</button>
+      <div class="sidebar-bottom">
+        <div class="help-card"><div class="help-icon">?</div><div><strong>Need a hand?</strong><span>Visit the help center</span></div><span class="help-arrow">↗</span></div>
+        <div class="profile"><div class="avatar">JD</div><div class="profile-info"><strong>Jordan Davis</strong><span>Fleet administrator</span></div><span class="profile-menu">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar"><div class="breadcrumbs"><span>Workspace</span><i>/</i><strong id="crumb-current">Fleet overview</strong></div><div class="top-actions"><span class="env-pill"><span></span> DEMO ENVIRONMENT</span><button class="icon-button" aria-label="Notifications">♧<b></b></button><div class="top-avatar">JD</div></div></header>
+      <div id="view"></div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+  <div id="modal-root"></div>
+  <script src="/tag.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
