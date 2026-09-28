@@ -1,6 +1,6 @@
 const $ = (selector, root = document) => root.querySelector(selector);
 const view = $("#view");
-const state = { route: location.hash || "#/fleet", vehicles: [], selected: null, incidents: [], tests: [], tools: [], analysis: null, chatBusy: false };
+const state = { route: location.hash || "#/fleet", vehicles: [], selected: null, incidents: [], tests: [], tools: [], analysis: null, repoUrl: localStorage.getItem("webmcp-repo-url") || "", chatBusy: false };
 
 const icon = {
   car: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 11 1.4-4.2A2 2 0 0 1 8.3 5.5h7.4a2 2 0 0 1 1.9 1.3L19 11l1.2 1.2c.5.5.8 1.2.8 1.9v3.4a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1V17h-11v1.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-3.4c0-.7.3-1.4.8-1.9L5 11Zm1.1 0h11.8l-1.1-3.3a.6.6 0 0 0-.6-.4H7.8a.6.6 0 0 0-.6.4L6.1 11ZM6 14.5a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Zm12 0a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Z"/></svg>',
@@ -124,8 +124,8 @@ function renderStudio() {
   <div class="steps"><div class="step-item done"><span>1</span><b>Analyze running app</b></div><i class="step-line ${state.analysis ? "complete" : ""}"></i><div class="step-item ${state.analysis ? "done" : ""}"><span>2</span><b>Review capabilities</b></div><i class="step-line ${state.tools.length ? "complete" : ""}"></i><div class="step-item ${state.tools.length ? "done" : ""}"><span>3</span><b>Publish to app</b></div></div>
   <div class="studio-grid"><div class="studio-main">
     <article class="panel repo-panel"><div class="panel-heading"><div><div class="panel-title-icon repo-title-icon">⌘</div><div class="repo-heading-copy"><h2>Running application</h2><p>Inspect the real request mappings registered by this Spring app.</p></div></div><span class="repo-state"><i></i> ${state.analysis ? "Analyzed" : "Ready to analyze"}</span></div>
-      <div class="repo-input-row"><span class="github-icon">⌘</span><input id="repo-url" value="Spring app · localhost:8080" aria-label="Running Spring application" readonly><button id="analyze-btn" class="button primary">${state.analysis ? "Re-analyze" : "Analyze application"} ${icon.arrow}</button></div>
-      <div class="repo-meta"><span><i>◉</i> Live Spring MVC mappings</span><span>Frontend <b>route context</b></span><span>Source <b>running container</b></span></div>
+      <div class="repo-input-row"><span class="github-icon">⌘</span><input id="repo-url" value="${escapeHtml(state.repoUrl)}" placeholder="https://github.com/owner/repository" aria-label="Public GitHub repository URL"><button id="analyze-btn" class="button primary">${state.analysis ? "Re-analyze" : "Analyze repository"} ${icon.arrow}</button></div>
+      <div class="repo-meta"><span><i>◉</i> Public GitHub API · read only</span><span>Stack <b>Spring Boot</b></span><span>Access <b>no token needed</b></span></div>
     </article>
     ${state.analysis ? renderCapabilities() : renderAnalyzerEmpty()}
     ${state.analysis ? renderPublishBar() : ""}
@@ -181,11 +181,14 @@ function bindStudioEvents() {
 
 async function analyzeRepository() {
   const button = $("#analyze-btn") || $("#empty-analyze"); if (!button) return;
-  button.disabled = true; button.classList.add("loading"); button.dataset.original = button.textContent; button.textContent = "Analyzing Spring endpoints…";
+  const repositoryUrl = $("#repo-url")?.value.trim();
+  if (!repositoryUrl) { toast("Enter the public GitHub repository URL first.", "error"); $("#repo-url")?.focus(); return; }
+  state.repoUrl = repositoryUrl; localStorage.setItem("webmcp-repo-url", repositoryUrl);
+  button.disabled = true; button.classList.add("loading"); button.dataset.original = button.textContent; button.textContent = "Reading GitHub source…";
   try {
-    state.analysis = await api("/api/platform/analyze", { method: "POST", body: "{}" });
+    state.analysis = await api("/api/platform/analyze-github", { method: "POST", body: JSON.stringify({ repositoryUrl }) });
     state.analysis.selected = state.analysis.capabilities.filter((cap) => cap.publishable).map((cap) => cap.name);
-    renderStudio(); toast(`Spring app analyzed · ${state.analysis.capabilities.length} capabilities discovered`);
+    renderStudio(); toast(`GitHub repository analyzed · ${state.analysis.capabilities.length} capabilities discovered`);
   } catch (error) { toast(error.message, "error"); }
 }
 

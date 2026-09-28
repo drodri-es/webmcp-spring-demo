@@ -31,6 +31,7 @@ public class WebmcpDemoApplication {
         private final Map<String, List<Incident>> incidents = new HashMap<>();
         private final Set<String> published = new LinkedHashSet<>();
         private final RequestMappingHandlerMapping handlerMapping;
+        private final GitHubRepositoryReader repositoryReader = new GitHubRepositoryReader();
 
         DemoApi(RequestMappingHandlerMapping handlerMapping) {
             this.handlerMapping = handlerMapping;
@@ -103,6 +104,11 @@ public class WebmcpDemoApplication {
             });
             return new Analysis("fleet-service", "Spring Boot · Vanilla JS", routes.size(), capabilities.size(),
                     routes, capabilities, List.copyOf(controllerNames));
+        }
+
+        @PostMapping("/platform/analyze-github")
+        Analysis analyzeGitHub(@RequestBody AnalyzeRequest request) {
+            return repositoryReader.analyze(request.repositoryUrl());
         }
 
         @PostMapping("/platform/publish")
@@ -240,5 +246,6 @@ public class WebmcpDemoApplication {
     record Analysis(String repository, String stack, int routesFound, int endpointsFound,
                     List<String> routes, List<Capability> capabilities, List<String> controllers) {}
     record PublishRequest(List<String> tools) {}
+    record AnalyzeRequest(String repositoryUrl) {}
     record Manifest(boolean tagInstalled, List<String> publishedTools, String status) {}
 }
