@@ -135,7 +135,7 @@ final class GitHubRepositoryReader {
             String verb = mappings.group(1).toUpperCase(Locale.ROOT);
             String methodPath = mappings.group(2) == null ? "" : mappings.group(2).trim();
             String endpoint = normalizePath(basePath, methodPath);
-            if (!endpoint.startsWith("/api/vehicles") && !endpoint.startsWith("/vehicles/")) continue;
+            if (!endpoint.startsWith("/api/vehicles") && !endpoint.startsWith("/vehicles/" ) && !endpoint.equals("/vehicles")) continue;
             String name = toolName(verb, endpoint);
             String risk = switch (verb) {
                 case "GET", "HEAD" -> "READ";
@@ -144,7 +144,10 @@ final class GitHubRepositoryReader {
                 default -> "REVIEW";
             };
             String inputNames = pathInputs(endpoint);
-            String trailingSource = source.substring(mappings.end(), Math.min(source.length(), mappings.end() + 1200));
+            Matcher nextMapping = SPRING_MAPPING.matcher(source);
+            nextMapping.region(mappings.end(), source.length());
+            int methodEnd = nextMapping.find() ? nextMapping.start() : source.length();
+            String trailingSource = source.substring(mappings.end(), Math.min(methodEnd, mappings.end() + 1800));
             inputNames = bodyInputs(trailingSource, javaSources, inputNames);
             String description = risk.equals("WRITE")
                     ? "Creates or changes vehicle data after user confirmation."
@@ -155,12 +158,13 @@ final class GitHubRepositoryReader {
     }
 
     private String classBasePath(String source) {
-        Matcher methodMapping = SPRING_MAPPING.matcher(source);
-        if (!methodMapping.find()) return "";
-        int annotation = source.lastIndexOf("@RequestMapping", methodMapping.start());
-        if (annotation < 0 || methodMapping.start() - annotation > 600) return "";
+        Matcher controller = Pattern.compile("@(?:RestController|Controller)\\b").matcher(source);
+        if (!controller.find()) return "";
+        int classDeclaration = source.indexOf("class ", controller.end());
+        int annotation = source.indexOf("@RequestMapping", controller.end());
+        if (annotation < 0 || (classDeclaration >= 0 && annotation > classDeclaration) || annotation - controller.end() > 600) return "";
         int end = source.indexOf(')', annotation);
-        if (end < 0 || end > methodMapping.start()) return "";
+        if (end < 0 || end > annotation + 600) return "";
         Matcher value = Pattern.compile("[\"']([^\"']+)[\"']").matcher(source.substring(annotation, end + 1));
         return value.find() ? value.group(1) : "";
     }
