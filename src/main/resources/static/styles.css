@@ -6,3 +6,54 @@
 /* dialogs, toast and responsive layout */
 .modal-backdrop{position:fixed;inset:0;background:rgba(22,30,47,.34);backdrop-filter:blur(3px);z-index:10;display:grid;place-items:center;padding:16px}.modal{width:min(430px,100%);background:white;border-radius:10px;box-shadow:0 20px 60px #1e294530;padding:22px;animation:modal-in .16s ease-out}@keyframes modal-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}.modal-kicker{display:flex;align-items:center;gap:6px;font-size:8px;letter-spacing:.9px;font-weight:700;color:#6978dc;margin-bottom:11px}.modal h2{font:700 19px Manrope,sans-serif;letter-spacing:-.5px;margin:0;color:#252e3c}.modal-intro{font-size:10px;color:#8c95a3;line-height:1.6;margin:7px 0 17px}.modal-intro b{color:#5b6472}.incident-form label{display:block;font-size:9px;color:#737d8b;font-weight:600;margin:11px 0}.incident-form input,.incident-form select,.incident-form textarea{display:block;width:100%;margin-top:5px;border:1px solid #e7eaf0;border-radius:5px;padding:8px 9px;color:#4c5665;outline:0;font-size:9px;background:white}.incident-form textarea{resize:vertical;line-height:1.5}.incident-form input:focus,.incident-form select:focus,.incident-form textarea:focus{border-color:#8290e7;box-shadow:0 0 0 2px #e9ecff}.approval-note{background:#f5faf7;border:1px solid #e8f4ed;color:#708b7e;border-radius:5px;padding:8px;font-size:8px;margin:14px 0 16px}.approval-note span{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;color:white;background:#45ad7f;margin-right:5px}.modal-actions{display:flex;justify-content:flex-end;gap:7px}.modal-actions .button{height:32px;font-size:9px}.risk-dot{width:7px;height:7px;background:#dfa340;border-radius:50%}.scan-tree{border:1px solid #eceef3;background:#fafbfc;border-radius:6px;padding:9px 10px;margin:11px 0 16px;font:8px ui-monospace,SFMono-Regular,monospace;color:#6f7a8b;line-height:1.45}.tree-root{font-weight:700;color:#556177}.tree-root span{float:right;font:700 6px "DM Sans",sans-serif;letter-spacing:.35px;color:#9ca5b1}.tree-line{height:8px;border-left:1px solid #dadee8;margin-left:6px}.tree-node{padding:4px 0;color:#8d96a4}.tree-node b{color:#5c6677;font-weight:500}.tree-node.indent{padding-left:22px}.tree-node.indent b{color:#717dd0}.tree-node span{float:right;color:#65a483;font-size:7px}.toast{position:fixed;right:22px;bottom:20px;z-index:20;background:#263243;color:white;border-radius:7px;padding:11px 14px;box-shadow:0 6px 24px #101d3030;font-size:10px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateY(0)}.toast.error{background:#b74c51}.load-error{padding:80px 36px;text-align:center;color:#8992a0}.load-error>span{width:38px;height:38px;margin:auto auto 10px;border-radius:50%;display:grid;place-items:center;background:#fff3e5;color:#c28a2c;font-weight:700}.load-error h1{font:700 18px Manrope,sans-serif;color:#303846}.load-error p{font-size:10px}.load-error .button{margin-top:8px}
 @media(max-width:1050px){.sidebar{width:205px}.main-area{margin-left:205px}.content-grid,.detail-columns{grid-template-columns:minmax(0,1.3fr) minmax(240px,.8fr)}.assistant-banner{grid-template-columns:31px 1fr}.assistant-chat{grid-column:2}.studio-grid{grid-template-columns:minmax(0,1fr) 220px}.stats-grid,.page-heading,.content-grid,.activity-panel,.vehicle-hero,.vehicle-kpis,.detail-columns,.tests-panel,.assistant-banner,.studio-intro,.steps,.studio-grid{padding-left:23px;padding-right:23px}.vehicle-kpis{margin-left:23px;margin-right:23px}.activity-panel,.tests-panel,.assistant-banner{margin-left:23px;margin-right:23px}}@media(max-width:780px){.sidebar{width:57px;padding:17px 8px}.brand{margin:0 auto 27px}.brand>span:not(.brand-mark),.workspace-label,.workspace-switch,.side-label,.nav-item:not(.active),.nav-item.active{font-size:0}.nav-item{justify-content:center;padding:0}.nav-item .nav-icon{font-size:16px}.nav-item.active .nav-icon{font-size:16px}.nav-count,.new-badge,.nav-ping,.sidebar-bottom{display:none}.main-area{margin-left:57px}.topbar{padding:0 17px}.stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}.page-heading{align-items:flex-start;gap:10px}.page-heading h1{font-size:21px}.content-grid,.detail-columns{grid-template-columns:1fr}.health-panel{display:none}.studio-grid{grid-template-columns:1fr}.studio-side{display:grid;grid-template-columns:1fr 1fr}.safe-note{grid-column:1/-1}.studio-intro-decoration{display:none}.vehicle-kpis{grid-template-columns:repeat(2,1fr);row-gap:12px}.vehicle-kpis article:nth-child(2){border:0}.checks-grid{grid-template-columns:1fr}.check-item{padding-left:0}.assistant-banner{grid-template-columns:30px minmax(0,1fr)}.assistant-chat{grid-column:1/-1}.steps{gap:5px}.step-item{gap:4px;font-size:7px}.step-item span{width:16px;height:16px}.step-line{min-width:5px}.studio-intro h1{font-size:22px}}@media(max-width:500px){.page-heading{padding-top:20px}.page-heading p{max-width:225px;line-height:1.45}.heading-actions .button{height:30px;padding:0 8px}.stats-grid,.content-grid,.detail-columns,.vehicle-hero,.tests-panel,.assistant-banner,.studio-intro,.steps,.studio-grid{padding-left:13px;padding-right:13px}.activity-panel,.assistant-banner,.tests-panel{margin-left:13px;margin-right:13px}.vehicle-kpis{margin-left:13px;margin-right:13px}.vehicle-hero{align-items:flex-start}.vehicle-title-line{flex-wrap:wrap;gap:5px}.vehicle-title-line h2{font-size:14px}.vehicle-hero-actions .button{font-size:8px;padding:0 7px}.studio-side{grid-template-columns:1fr}.repo-meta{gap:7px}.repo-meta span{font-size:6px}.scan-summary small{max-width:190px;line-height:1.4}.scan-detail{font-size:0}.capability-row{gap:6px}.risk-tag{font-size:6px;padding:3px}.capability-info>strong{font-size:8px}.steps{padding:9px}.step-item b{white-space:normal;max-width:65px;line-height:1.2}.env-pill{display:none}.topbar{height:49px}.vehicle-kpis article{padding-left:9px;padding-right:8px}}
+
+/* Readability pass: enlarge small interface copy without changing the layout. */
+body{font-size:15px}
+.workspace-label,.side-label{font-size:11px}.nav-item{font-size:14px}
+.nav-count,.help-card strong,.help-card span,.profile-info strong,.profile-info span{font-size:12px}
+.help-card div:nth-child(2) span,.profile-info span{font-size:11px}
+.breadcrumbs{font-size:13px}.env-pill{font-size:10px}
+.page-heading h1,.studio-intro h1{font-size:28px}
+.page-heading p,.studio-intro p{font-size:13px;line-height:1.5}.eyebrow{font-size:10px}
+.button{font-size:12px}.stat-top{font-size:12px}.stat-foot{font-size:11px}
+.panel-heading h2{font-size:14px}.panel-heading p{font-size:11px}.text-button{font-size:11px}
+.table-head{font-size:10px}.vehicle-main strong{font-size:12px}
+.vehicle-main small,.status-pill,.panel-foot,.health-note small,.activity-row small,.activity-row time{font-size:10px}
+.health-note strong,.activity-row strong{font-size:11px}
+.vehicle-identity p,.vehicle-kpis article>span,.vehicle-kpis article>small{font-size:11px}
+.vehicle-kpis article>strong{font-size:15px}
+.incident-copy p,.summary-highlight p,.check-item small{font-size:12px;line-height:1.5}
+.incident-copy strong,.summary-facts strong,.check-item strong{font-size:12px}
+.assistant-copy p,.chat-messages,.chat-form input{font-size:13px;line-height:1.5}
+.studio-kicker,.repo-meta span,.repo-state{font-size:11px}.repo-heading-copy h2{font-size:15px}
+.repo-heading-copy p,.analyzer-empty p{font-size:12px;line-height:1.5}
+.analyzer-empty h2{font-size:15px}.analyzer-empty .text-button{font-size:11px}
+.step-item{font-size:11px}.capabilities-panel .panel-heading h2{font-size:13px}
+.capabilities-panel .panel-heading p,.scan-summary strong{font-size:11px}
+.scan-summary small,.scan-detail{font-size:10px}.capability-info>strong{font-size:12px}
+.capability-info>small,.capability-info code,.risk-tag{font-size:10px}.method-tag{font-size:9px}
+.capability-foot,.subtle-button,.publish-bar>span small{font-size:10px}.publish-bar>span b{font-size:12px}
+.side-panel-heading strong,.how-step b{font-size:11px}
+.side-panel-heading small,.connected-app-card strong,.how-step small,.how-footer,.safe-note{font-size:10px}
+.connected-app-card small,.tag-installed b{font-size:9px}
+.tag-installed small,.tag-installed code{font-size:8px}
+.modal-kicker{font-size:10px}.modal-intro{font-size:12px;line-height:1.55}
+.incident-form label,.incident-form input,.incident-form select,.incident-form textarea,.approval-note{font-size:11px}
+.modal-actions .button{font-size:11px}.scan-tree{font-size:10px}
+.tree-root span,.tree-node span{font-size:9px}.toast{font-size:12px}.load-error p{font-size:12px}
+@media(max-width:780px){.steps .step-item{font-size:9px}}
+@media(max-width:500px){.vehicle-hero-actions .button{font-size:10px}.repo-meta span{font-size:9px}.capability-info>strong{font-size:11px}.risk-tag{font-size:9px}}
+
+/* Assistant readability: these rules override its original compact typography. */
+.assistant-title{font-size:16px}
+.beta-pill{font-size:9px;padding:4px 6px}
+.assistant-copy p{font-size:13px;line-height:1.55}
+.suggestions button{font-size:11px;padding:7px 9px}
+.assistant-message p,.user-message p{font-size:13px;line-height:1.55}
+.chat-form input{font-size:13px;padding:0 8px}
+.chat-foot{font-size:10px}
+.tool-used{font-size:10px;padding:5px 7px}
+.inline-action{font-size:11px;padding:6px 8px}
+.message-avatar{width:21px;height:21px;flex-basis:21px;font-size:11px}
+.user-message-avatar{width:21px;height:21px;flex-basis:21px;font-size:9px}
+@media(max-width:500px){.assistant-title{font-size:15px}.assistant-message p,.user-message p,.chat-form input{font-size:12px}.suggestions button{font-size:10px}.chat-foot{font-size:9px}}

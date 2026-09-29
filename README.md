@@ -1,6 +1,6 @@
 # WebMCP Fleet Demo
 
-A small Spring Boot demo for the hackathon flow: inspect live Spring MVC mappings, review discovered capabilities, publish selected tools, then use them with page context in the fleet app.
+A small Spring Boot demo for the hackathon flow: inspect a public Spring repository, compare discovered capabilities with the connected fleet app, publish compatible tools, then use them with page context.
 
 ## Run with Docker
 
@@ -16,12 +16,12 @@ Open [http://localhost:8080](http://localhost:8080). Stop the app with `Ctrl+C`,
 ## Demo path
 
 1. Open **WebMCP Studio** in the left navigation, paste a public GitHub repository URL, and select **Analyze repository**.
-2. Review the read and write tools discovered from Spring annotations and OpenAPI descriptions.
-3. Publish the selected capabilities.
-4. Return to **Fleet overview**, open the Volkswagen ID.4, and ask the assistant to summarize it.
-5. Choose **Create an incident** and confirm the write action. The incident appears in the vehicle record.
+2. Review the read and write tools discovered from Spring annotations and OpenAPI descriptions. Tools are publishable only when the connected app exposes the same HTTP method and endpoint.
+3. Publish selected capabilities. The registry stores the matching live app routes.
+4. Return to **Fleet overview**, open a vehicle, and ask about its health, incidents or checks. The demo assistant selects published tools and invokes their registered method and endpoint.
+5. Choose **Create an incident**, review the prepared action and confirm it. The incident appears in the vehicle record.
 
-The one-line `/tag.js` script is a local stand-in for the proposed WebMCP tag. It reads the published manifest and the current route. The analyzer reads public GitHub repositories through GitHub's unauthenticated REST API, extracts Spring mapping annotations and OpenAPI paths, and checks frontend route hints. It does not read private repositories or compile/execute uploaded code. The fleet API and incident write run in Spring Boot with in-memory data.
+The one-line `/tag.js` script is a local stand-in for the proposed WebMCP tag. It reads the published manifest and the current route. The analyzer reads public GitHub repositories through GitHub's unauthenticated REST API, extracts Spring mapping annotations and OpenAPI paths, and checks frontend route hints. It does not read private repositories or compile/execute uploaded code. The assistant's tool selection is a small local heuristic, not an LLM. The fleet API and incident write run in Spring Boot with in-memory data.
 
 ## Local development
 

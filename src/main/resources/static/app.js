@@ -120,10 +120,10 @@ function renderAssistant(vehicle) {
 
 function renderStudio() {
   setCrumb("WebMCP Studio");
-  view.innerHTML = `<section class="studio-intro"><div><div class="studio-kicker"><span class="studio-spark">✳</span> WEBMCP STUDIO</div><h1>Make your app agent-ready.</h1><p>Inspect live endpoints, review the tools they expose, and publish selected capabilities to the app.</p></div><div class="studio-intro-decoration"><span>W</span><i>✳</i><i>⌘</i><i>↗</i></div></section>
-  <div class="steps"><div class="step-item done"><span>1</span><b>Analyze running app</b></div><i class="step-line ${state.analysis ? "complete" : ""}"></i><div class="step-item ${state.analysis ? "done" : ""}"><span>2</span><b>Review capabilities</b></div><i class="step-line ${state.tools.length ? "complete" : ""}"></i><div class="step-item ${state.tools.length ? "done" : ""}"><span>3</span><b>Publish to app</b></div></div>
+  view.innerHTML = `<section class="studio-intro"><div><div class="studio-kicker"><span class="studio-spark">✳</span> WEBMCP STUDIO</div><h1>Make your app agent-ready.</h1><p>Analyze a public repository, match its capabilities to the connected app, and publish the tools you choose.</p></div><div class="studio-intro-decoration"><span>W</span><i>✳</i><i>⌘</i><i>↗</i></div></section>
+  <div class="steps"><div class="step-item done"><span>1</span><b>Analyze repository</b></div><i class="step-line ${state.analysis ? "complete" : ""}"></i><div class="step-item ${state.analysis ? "done" : ""}"><span>2</span><b>Review capabilities</b></div><i class="step-line ${state.tools.length ? "complete" : ""}"></i><div class="step-item ${state.tools.length ? "done" : ""}"><span>3</span><b>Publish to app</b></div></div>
   <div class="studio-grid"><div class="studio-main">
-    <article class="panel repo-panel"><div class="panel-heading"><div><div class="panel-title-icon repo-title-icon">⌘</div><div class="repo-heading-copy"><h2>Running application</h2><p>Inspect the real request mappings registered by this Spring app.</p></div></div><span class="repo-state"><i></i> ${state.analysis ? "Analyzed" : "Ready to analyze"}</span></div>
+    <article class="panel repo-panel"><div class="panel-heading"><div><div class="panel-title-icon repo-title-icon">⌘</div><div class="repo-heading-copy"><h2>Public GitHub repository</h2><p>Inspect Spring endpoints in the source; only routes available in the connected app can be published.</p></div></div><span class="repo-state"><i></i> ${state.analysis ? "Analyzed" : "Ready to analyze"}</span></div>
       <div class="repo-input-row"><span class="github-icon">⌘</span><input id="repo-url" value="${escapeHtml(state.repoUrl)}" placeholder="https://github.com/owner/repository" aria-label="Public GitHub repository URL"><button id="analyze-btn" class="button primary">${state.analysis ? "Re-analyze" : "Analyze repository"} ${icon.arrow}</button></div>
       <div class="repo-meta"><span><i>◉</i> Public GitHub API · read only</span><span>Stack <b>Spring Boot</b></span><span>Access <b>no token needed</b></span></div>
     </article>
@@ -138,14 +138,14 @@ function renderStudio() {
 }
 
 function renderAnalyzerEmpty() {
-  return `<article class="panel analyzer-empty"><div class="empty-graphic"><span class="graphic-window"><i></i><i></i><i></i><b>‹ / ›</b><span class="graphic-scan"></span></span><span class="graphic-spark">✳</span><span class="graphic-route">↗ /vehicles/:vin</span></div><h2>See what your app can do</h2><p>We'll inspect live Spring MVC mappings, the request inputs they expose, and the page routes available to the tag.</p><button id="empty-analyze" class="text-button">Analyze the running Spring app ${icon.arrow}</button></article>`;
+  return `<article class="panel analyzer-empty"><div class="empty-graphic"><span class="graphic-window"><i></i><i></i><i></i><b>‹ / ›</b><span class="graphic-scan"></span></span><span class="graphic-spark">✳</span><span class="graphic-route">↗ /vehicles/:vin</span></div><h2>See what your app can do</h2><p>We'll inspect Spring endpoints in the public source and compare them with the connected app.</p><button id="empty-analyze" class="text-button">Analyze the GitHub repository above ${icon.arrow}</button></article>`;
 }
 
 function renderCapabilities() {
   const included = new Set(state.analysis?.selected || ["getVehicle", "getVehicleIncidents", "getVehicleTests", "createVehicleIncident"]);
-  return `<article class="panel capabilities-panel"><div class="panel-heading"><div><h2>Discovered capabilities <span class="count-chip">${state.analysis.capabilities.length}</span></h2><p>Generated from the live Spring MVC mappings.</p></div><button id="select-all" class="text-button">Select safe tools</button></div>
+  return `<article class="panel capabilities-panel"><div class="panel-heading"><div><h2>Discovered capabilities <span class="count-chip">${state.analysis.capabilities.length}</span></h2><p>Extracted from the repository; unavailable endpoints are disabled.</p></div><button id="select-all" class="text-button">Select safe tools</button></div>
     <div class="scan-summary"><span class="scan-check">✓</span><span><strong>Analysis complete</strong><small>Found ${state.analysis.endpointsFound} Spring endpoints across ${state.analysis.controllers.length} controller and ${state.analysis.routesFound} frontend routes.</small></span><button class="scan-detail" id="show-scan">View scan details ${icon.chevron}</button></div>
-    <div class="capability-list">${state.analysis.capabilities.map((cap) => `<label class="capability-row ${cap.risk.toLowerCase()} ${!cap.publishable ? "disabled-capability" : ""}"><input type="checkbox" name="capability" value="${escapeHtml(cap.name)}" ${included.has(cap.name) ? "checked" : ""} ${cap.publishable ? "" : "disabled"}><span class="cap-check"></span><span class="capability-info"><strong>${escapeHtml(cap.name)}<small class="method-tag ${cap.method.toLowerCase()}">${escapeHtml(cap.method)}</small></strong><small>${escapeHtml(cap.description)}</small><code>${escapeHtml(cap.method)} ${escapeHtml(cap.endpoint)}</code></span><span class="risk-tag ${cap.risk.toLowerCase()}">${cap.risk === "DESTRUCTIVE" ? "⚠ " : ""}${escapeHtml(cap.risk)}</span></label>`).join("")}</div>
+    <div class="capability-list">${state.analysis.capabilities.map((cap) => `<label class="capability-row ${cap.risk.toLowerCase()} ${!cap.publishable ? "disabled-capability" : ""}"><input type="checkbox" name="capability" value="${escapeHtml(cap.name)}" ${included.has(cap.name) ? "checked" : ""} ${cap.publishable ? "" : "disabled"}><span class="cap-check"></span><span class="capability-info"><strong>${escapeHtml(cap.name)}<small class="method-tag ${cap.method.toLowerCase()}">${escapeHtml(cap.method)}</small></strong><small>${escapeHtml(cap.description)}${!cap.publishable ? (cap.risk === "DESTRUCTIVE" ? " · Destructive action disabled" : " · Endpoint unavailable in connected app") : ""}</small><code>${escapeHtml(cap.method)} ${escapeHtml(cap.endpoint)}</code></span><span class="risk-tag ${cap.risk.toLowerCase()}">${cap.risk === "DESTRUCTIVE" ? "⚠ " : ""}${escapeHtml(cap.risk)}</span></label>`).join("")}</div>
     <div class="capability-foot"><span>✧ Names and schemas are generated from your actual API.</span><button class="subtle-button" id="show-scan-2">Inspect scanned files ↗</button></div>
   </article>`;
 }
@@ -214,9 +214,9 @@ async function publishTools() {
 }
 
 function showScanModal() {
-  const endpointRows = state.analysis.capabilities.map((cap) => `<div class="tree-node indent">↳ <b>${escapeHtml(cap.method)} ${escapeHtml(cap.endpoint)}</b><span>${escapeHtml(cap.name)}</span></div>`).join("");
+  const endpointRows = state.analysis.capabilities.map((cap) => `<div class="tree-node indent">↳ <b>${escapeHtml(cap.method)} ${escapeHtml(cap.endpoint)}</b><span>${escapeHtml(cap.name)}${cap.publishable ? " · available" : " · not publishable"}</span></div>`).join("");
   const routeRows = state.analysis.routes.map((route) => `<div class="tree-node indent">↳ <b>${escapeHtml(route)}</b><span>page context</span></div>`).join("");
-  openModal(`<div class="modal-kicker"><span class="studio-spark">✳</span> LIVE APPLICATION SCAN</div><h2>What Spring has registered</h2><p class="modal-intro">These capabilities come from the running app's request mappings. Inputs come from its path variables and request body.</p><div class="scan-tree"><div class="tree-root">⌘ &nbsp; ${escapeHtml(state.analysis.repository)} <span>${escapeHtml(state.analysis.stack).toUpperCase()}</span></div><div class="tree-line"></div><div class="tree-node">▱ &nbsp; Spring MVC controller <b>${escapeHtml(state.analysis.controllers.join(", "))}</b></div>${endpointRows}<div class="tree-node">▱ &nbsp; Frontend page routes</div>${routeRows}</div><div class="modal-actions"><button class="button secondary" data-close>Close</button></div>`);
+  openModal(`<div class="modal-kicker"><span class="studio-spark">✳</span> REPOSITORY SOURCE SCAN</div><h2>Endpoints found in source</h2><p class="modal-intro">Extracted from the public repository. A capability can be published only when the connected app exposes the same method and endpoint.</p><div class="scan-tree"><div class="tree-root">⌘ &nbsp; ${escapeHtml(state.analysis.repository)} <span>${escapeHtml(state.analysis.stack).toUpperCase()}</span></div><div class="tree-line"></div><div class="tree-node">▱ &nbsp; Spring MVC controller <b>${escapeHtml(state.analysis.controllers.join(", "))}</b></div>${endpointRows}<div class="tree-node">▱ &nbsp; Frontend page routes</div>${routeRows}</div><div class="modal-actions"><button class="button secondary" data-close>Close</button></div>`);
 }
 
 function openModal(content) {
@@ -225,16 +225,42 @@ function openModal(content) {
   root.querySelector(".modal")?.addEventListener("keydown", (event) => { if (event.key === "Escape") root.innerHTML = ""; });
 }
 
+function isVehicleDetailTool(tool) { return tool.method === "GET" && /^\/api\/vehicles\/\{[^/]+\}$/.test(tool.endpoint); }
+function isVehicleListTool(tool) { return tool.method === "GET" && tool.endpoint === "/api/vehicles"; }
+function isIncidentListTool(tool) { return tool.method === "GET" && /\/incidents\/?$/.test(tool.endpoint); }
+function isChecksTool(tool) { return tool.method === "GET" && /\/(?:tests|checks|inspections)\/?$/.test(tool.endpoint); }
+function isCreateIncidentTool(tool) { return tool.method === "POST" && /\/vehicles\/\{[^/]+\}\/incidents\/?$/.test(tool.endpoint) && tool.risk === "WRITE"; }
+
 function openIncidentModal() {
   const vehicle = state.selected;
+  const createTool = state.tools.find(isCreateIncidentTool);
+  if (!createTool) {
+    toast("Publish the create incident capability in Studio first.", "error"); return;
+  }
   openModal(`<div class="modal-kicker"><span class="risk-dot"></span> CREATE INCIDENT</div><h2>Report an issue</h2><p class="modal-intro">This will create a new incident for <b>${escapeHtml(vehicle.model)}</b>. The action runs only after you confirm.</p><form id="incident-form" class="incident-form"><label>Title<input name="title" required value="Battery range below expected"></label><label>Severity<select name="severity"><option>HIGH</option><option>MEDIUM</option><option>LOW</option></select></label><label>Description<textarea name="description" rows="3">Energy consumption is above the expected range based on recent diagnostics.</textarea></label><div class="approval-note"><span>✓</span> Agent prepared this action. You control whether it runs.</div><div class="modal-actions"><button type="button" class="button secondary" data-close>Cancel</button><button type="submit" class="button primary">Confirm and create <span>→</span></button></div></form>`);
   $("#incident-form").addEventListener("submit", async (event) => {
     event.preventDefault(); const form = event.currentTarget; const data = Object.fromEntries(new FormData(form)); const submit = form.querySelector('[type="submit"]'); submit.disabled = true; submit.textContent = "Creating…";
     try {
-      await api(`/api/vehicles/${vehicle.vin}/incidents`, { method: "POST", body: JSON.stringify(data) });
+      await invokePublishedTool(createTool.name, { vin: vehicle.vin, ...data });
       $("#modal-root").innerHTML = ""; await renderCurrent(); toast("Incident created and added to the vehicle record");
     } catch (error) { toast(error.message, "error"); submit.disabled = false; submit.innerHTML = 'Confirm and create <span>→</span>'; }
   });
+}
+
+async function invokePublishedTool(name, args = {}) {
+  const capability = state.tools.find((tool) => tool.name === name);
+  if (!capability) throw new Error(`Capability ${name} is not published.`);
+  if (!capability.endpoint.startsWith("/api/vehicles")) throw new Error("This capability is outside the connected app.");
+  const pathKeys = [...capability.endpoint.matchAll(/\{([^}]+)\}/g)].map((match) => match[1]);
+  const endpoint = capability.endpoint.replace(/\{([^}]+)\}/g, (_match, key) => {
+    if (args[key] === undefined || args[key] === null) throw new Error(`Missing tool input: ${key}`);
+    return encodeURIComponent(args[key]);
+  });
+  const method = capability.method.toUpperCase();
+  const body = Object.fromEntries(Object.entries(args).filter(([key]) => !pathKeys.includes(key)));
+  const options = { method };
+  if (!["GET", "HEAD"].includes(method)) options.body = JSON.stringify(body);
+  return api(endpoint, options);
 }
 
 function appendMessage(role, content) {
@@ -254,15 +280,40 @@ async function sendPrompt(prompt) {
   const messages = $("#chat-messages");
   const thinking = document.createElement("div"); thinking.className = "assistant-message thinking-message"; thinking.innerHTML = '<span class="message-avatar">✳</span><p><span class="typing"><i></i><i></i><i></i></span> Checking vehicle data…</p>'; messages?.append(thinking); if (messages) messages.scrollTop = messages.scrollHeight;
   try {
-    const [vehicle, incidents] = await Promise.all([api(`/api/vehicles/${state.selected.vin}`), api(`/api/vehicles/${state.selected.vin}/incidents`)]);
-    const open = incidents.filter((i) => i.status === "Open");
+    const query = prompt.toLowerCase();
+    const asksFleet = /fleet|all vehicles|every vehicle|flota|todos los veh[ií]culos/i.test(query);
+    const asksIncidents = /problem|issue|incident|health|summar|important|status|open|problema|incidenc|aver[ií]a|salud|resumen|estado/i.test(query);
+    const asksChecks = /test|check|inspection|diagnostic|prueba|chequeo|revisi[oó]n|diagn[oó]stic/i.test(query);
+    const requested = state.tools.filter((tool) => {
+      if (isVehicleListTool(tool)) return asksFleet;
+      if (isVehicleDetailTool(tool)) return !asksFleet;
+      if (isIncidentListTool(tool)) return asksIncidents && !asksFleet;
+      if (isChecksTool(tool)) return asksChecks && !asksFleet;
+      return false;
+    });
+    if (!requested.length) throw new Error("No published read capability matches that question.");
+    const results = await Promise.all(requested.map(async (tool) => [tool.name, await invokePublishedTool(tool.name, { vin: WebMCPTag.getContext().vin || state.selected.vin })]));
+    const data = Object.fromEntries(results);
+    const vehicleTool = requested.find(isVehicleDetailTool);
+    const incidentTool = requested.find(isIncidentListTool);
+    const checksTool = requested.find(isChecksTool);
+    const listTool = requested.find(isVehicleListTool);
+    const vehicle = vehicleTool ? data[vehicleTool.name] : null;
+    const incidents = incidentTool ? data[incidentTool.name] : [];
+    const tests = checksTool ? data[checksTool.name] : [];
+    const fleet = listTool ? data[listTool.name] : [];
+    const open = incidents.filter((incident) => incident.status === "Open");
     setTimeout(() => {
       thinking.remove();
-      const hasIssues = /problem|issue|incident|health|summar|important|status/i.test(prompt);
-      const summary = hasIssues
-        ? `${escapeHtml(vehicle.model)} (${vehicle.vin}) is <b>${escapeHtml(vehicle.status.toLowerCase())}</b> with ${vehicle.battery}% battery health. There ${open.length === 1 ? "is" : "are"} <b>${open.length} open incident${open.length === 1 ? "" : "s"}</b>${open[0] ? `, led by “${escapeHtml(open[0].title)}” (${open[0].severity.toLowerCase()} priority)` : ""}. ${escapeHtml(vehicle.summary)}.`
-        : `I checked the live record for ${escapeHtml(vehicle.model)}. It is based in ${escapeHtml(vehicle.location)} with ${vehicle.battery}% battery health and ${open.length} open incidents.`;
-      appendMessage("assistant", `<span class="tool-used">✓ getVehicle &nbsp; ✓ getVehicleIncidents</span>${summary}<br><button class="inline-action" data-create-from-chat>＋ Create an incident</button>`);
+      const summary = vehicle
+        ? `${escapeHtml(vehicle.model)} (${vehicle.vin}) is <b>${escapeHtml(vehicle.status.toLowerCase())}</b> with ${vehicle.battery}% battery health.${incidentTool ? ` There ${open.length === 1 ? "is" : "are"} <b>${open.length} open incident${open.length === 1 ? "" : "s"}</b>${open[0] ? `, led by “${escapeHtml(open[0].title)}” (${open[0].severity.toLowerCase()} priority)` : ""}.` : ""} ${escapeHtml(vehicle.summary)}.`
+        : fleet.length ? `The fleet has <b>${fleet.length} vehicles</b>: ${fleet.map((item) => `${escapeHtml(item.model)} (${escapeHtml(item.status)})`).join(", ")}.`
+        : "I retrieved the published tool results.";
+      const testSummary = tests.length ? `<br><br><b>Latest checks:</b> ${tests.map((test) => `${escapeHtml(test.name)}: ${escapeHtml(test.status)}`).join(" · ")}` : "";
+      const toolNames = requested.map((tool) => `✓ ${escapeHtml(tool.name)}`).join(" &nbsp; ");
+      const createAction = state.tools.some(isCreateIncidentTool)
+        ? `<br><button class="inline-action" data-create-from-chat>＋ Create an incident</button>` : "";
+      appendMessage("assistant", `<span class="tool-used">${toolNames}</span>${summary}${testSummary}${createAction}`);
       $$("[data-create-from-chat]").forEach((button) => button.addEventListener("click", openIncidentModal));
     }, 500);
   } catch (error) { thinking.remove(); appendMessage("assistant", `I couldn't load the vehicle right now: ${escapeHtml(error.message)}`); }

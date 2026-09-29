@@ -29,7 +29,8 @@ public class WebmcpDemoApplication {
     static class DemoApi {
         private final Map<String, Vehicle> vehicles = new LinkedHashMap<>();
         private final Map<String, List<Incident>> incidents = new HashMap<>();
-        private final Set<String> published = new LinkedHashSet<>();
+        private final Map<String, Capability> published = new LinkedHashMap<>();
+        private Analysis lastAnalysis;
         private final RequestMappingHandlerMapping handlerMapping;
         private final GitHubRepositoryReader repositoryReader = new GitHubRepositoryReader();
 
@@ -102,33 +103,58 @@ public class WebmcpDemoApplication {
                     controllerNames.add(handler.getBeanType().getSimpleName().replace("WebmcpDemoApplication$", ""));
                 }
             });
-            return new Analysis("fleet-service", "Spring Boot · Vanilla JS", routes.size(), capabilities.size(),
+            lastAnalysis = new Analysis("fleet-service", "Spring Boot · Vanilla JS", routes.size(), capabilities.size(),
                     routes, capabilities, List.copyOf(controllerNames));
+            return lastAnalysis;
         }
 
         @PostMapping("/platform/analyze-github")
         Analysis analyzeGitHub(@RequestBody AnalyzeRequest request) {
-            return repositoryReader.analyze(request.repositoryUrl());
+            Analysis analysis = repositoryReader.analyze(request.repositoryUrl());
+            Set<String> liveEndpoints = new HashSet<>();
+            for (Capability capability : discoverCapabilities()) {
+                liveEndpoints.add(capability.method() + " " + capability.endpoint());
+            }
+            List<Capability> compatible = analysis.capabilities().stream()
+                    .map(capability -> new Capability(capability.name(), capability.label(), capability.description(),
+                            capability.risk(), capability.method(), capability.endpoint(), capability.inputs(),
+                            capability.publishable() && liveEndpoints.contains(capability.method() + " " + capability.endpoint())))
+                    .toList();
+            lastAnalysis = new Analysis(analysis.repository(), analysis.stack(), analysis.routesFound(),
+                    compatible.size(), analysis.routes(), compatible, analysis.controllers());
+            return lastAnalysis;
         }
 
         @PostMapping("/platform/publish")
         Map<String, Object> publish(@RequestBody PublishRequest request) {
             published.clear();
+            if (lastAnalysis == null || request.tools() == null) {
+                return Map.of("published", true, "count", 0, "tools", currentTools());
+            }
+            Map<String, Capability> liveByEndpoint = new HashMap<>();
+            for (Capability capability : discoverCapabilities()) {
+                liveByEndpoint.put(capability.method() + " " + capability.endpoint(), capability);
+            }
             for (String name : request.tools()) {
-                discoverCapabilities().stream().filter(c -> c.name().equals(name) && c.publishable()).findFirst()
-                        .ifPresent(c -> published.add(c.name()));
+                lastAnalysis.capabilities().stream()
+                        .filter(candidate -> candidate.name().equals(name) && candidate.publishable())
+                        .findFirst()
+                        .map(candidate -> liveByEndpoint.get(candidate.method() + " " + candidate.endpoint()))
+                        .filter(Objects::nonNull)
+                        .filter(Capability::publishable)
+                        .ifPresent(capability -> published.put(capability.name(), capability));
             }
             return Map.of("published", true, "count", published.size(), "tools", currentTools());
         }
 
         @GetMapping("/platform/manifest")
         Manifest manifest() {
-            return new Manifest(true, List.copyOf(published), published.isEmpty() ? "Waiting for published tools" : "Connected");
+            return new Manifest(true, List.copyOf(published.keySet()), published.isEmpty() ? "Waiting for published tools" : "Connected");
         }
 
         @GetMapping("/platform/tools")
         List<Capability> currentTools() {
-            return discoverCapabilities().stream().filter(c -> published.contains(c.name())).toList();
+            return List.copyOf(published.values());
         }
 
         private List<Capability> discoverCapabilities() {
